@@ -14,7 +14,12 @@ services:
       - traefik
     restart: always
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${NODE_ENV}
+      - HOST=0.0.0.0
+      - PORT=3000
+      - NEXT_SHARP_PATH=/app/node_modules/sharp
+      - API_URI=${API_URI}
+      - KAKAO_KEY=${REACT_APP_FIREBASE_API_KEY}
       - TZ=Asia/Seoul
 networks:
   traefik:
