@@ -1,4 +1,5 @@
 version: '3'
+<<<<<<< HEAD
 
 services:
   report-app:
@@ -20,6 +21,30 @@ services:
       - "traefik.http.services.report.loadbalancer.server.port=3000"
       - "traefik.http.services.report.loadbalancer.server.scheme=http"
 
+=======
+services:
+  report-app:
+    image: registry.smartsignal.co.kr/report-app:latest
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.report-app.entrypoints=websecure
+      - traefik.http.routers.report-app.service=report-app
+      - traefik.http.routers.report-app.rule=Host(`report.stl1.co.kr`)
+      - traefik.http.routers.report-app.tls.certresolver=resolver
+      - traefik.http.services.report-app.loadbalancer.server.port=3000
+      - traefik.http.services.report-app.loadbalancer.server.scheme=http
+    networks:
+      - traefik
+    restart: always
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - HOST=0.0.0.0
+      - PORT=3000
+      - NEXT_SHARP_PATH=/app/node_modules/sharp
+      - API_URI=${API_URI}
+      - KAKAO_KEY=${REACT_APP_FIREBASE_API_KEY}
+      - TZ=Asia/Seoul
+>>>>>>> d394e4d (Initial commit)
 networks:
   traefik:
     external: true
