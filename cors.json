@@ -1,0 +1,9 @@
+[
+    {
+      "origin": ["https://report.stl1.co.kr"],
+      "method": ["GET"],
+      "responseHeader": ["Content-Type"],
+      "maxAgeSeconds": 3600
+    }
+  ]
+  

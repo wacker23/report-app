@@ -1,0 +1,101 @@
+/* List Drawer Container */
+.list-drawer {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Start off-screen */
+    width: 400px;
+    height: 100%;
+    background: white;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    padding: 20px;
+    z-index: 1000;
+    transition: right 0.3s ease-in-out;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* When active, slide the panel into view */
+  .list-drawer.active {
+    right: 0; /* Slide into view */
+  }
+  
+  /* Document Detail (inside List Drawer) */
+  .list-drawer .document-detail h3 {
+    margin: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    font-size: 18px;
+  }
+  
+  /* Action buttons in the detail view */
+  .list-drawer .document-detail button {
+    background-color: #4c51bf;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin: 10px 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .list-drawer .document-detail button:hover {
+    background-color: #333a70;
+  }
+  
+  /* Input fields within the form */
+  .list-drawer .document-detail input,
+  .list-drawer .document-detail textarea {
+    width: calc(100% - 10px);
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+  }
+  
+  /* Toggle switch for completion status */
+  .list-drawer .document-detail .toggle-switch {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .list-drawer .document-detail .toggle-switch input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+  
+  /* Additional spacing for content */
+  .list-drawer .document-detail p,
+  .list-drawer .document-detail div {
+    margin-bottom: 15px;
+  }
+  
+  /* Add animation for hovering over thumbnails in case of uploaded photos */
+  .list-drawer .document-detail .photo-thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin: 10px 5px;
+    transition: transform 0.2s ease;
+  }
+  
+  .list-drawer .document-detail .photo-thumbnail:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Placeholder for the search and list appearance */
+  .list-drawer .search-container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
