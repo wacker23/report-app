@@ -29,4 +29,5 @@ COPY --from=build --chown=stl:admin /app/build ./build
 USER stl
 
 EXPOSE 3000
-CMD ["serve", "-s", "build", "-l", "3000"]
+CMD ["serve", "-s", "build", "-l", "0.0.0.0:3000"]
+
