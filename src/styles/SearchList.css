@@ -36,7 +36,18 @@
   .document-list {
     list-style-type: none;
     padding: 0;
+    margin: 0;
+      overflow-y: auto;
+      /* Enable vertical scroll */
+      overflow-x: hidden;
+      /* Prevent horizontal scroll */
+      height: calc(100vh - 300px);
+      /* Adjust based on your layout */
+      box-sizing: border-box;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
   }
+  
   
   .document-item {
     display: flex;

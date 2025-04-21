@@ -29,9 +29,13 @@ COPY --from=build --chown=stl:admin /app/build ./build
 USER stl
 
 EXPOSE 3000
+<<<<<<< HEAD
 CMD ["serve", "-s", "build", "-l", "3000"]
 <<<<<<< HEAD
 
 
 =======
 >>>>>>> d394e4d (Initial commit)
+=======
+CMD ["serve", "-s", "build", "-l", "3000"]
+>>>>>>> fa648d2 (new update)

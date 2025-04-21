@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
+
 import { useNavigate } from "react-router-dom";
 import "../styles/Map.css";
 import asDoneIcon from "../styles/install-not.png";
@@ -17,7 +18,7 @@ const KakaoMap = () => {
   const [showPanelButtons, setShowPanelButtons] = useState(false);
   const [isListOpen, setIsListOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [touchStartTime, setTouchStartTime] = useState(0);
+  const markerRef = useRef(null);
   const navigate = useNavigate();
 
   // Check for mobile view
@@ -58,6 +59,16 @@ const KakaoMap = () => {
 
     const newMap = new window.kakao.maps.Map(container, options);
     setMap(newMap);
+     // 🔥 Create marker only once
+  if (!markerRef.current) {
+    markerRef.current = new window.kakao.maps.Marker({
+      position: options.center,
+    });
+    markerRef.current.setMap(newMap);
+  }
+
+  // Add events after map is initialized
+  addMapEvents(newMap);
 
     // Add map events with mobile support
     addMapEvents(newMap);
@@ -70,42 +81,33 @@ const KakaoMap = () => {
   };
 
   const addMapEvents = (newMap) => {
-    // Click event to hide buttons
-    window.kakao.maps.event.addListener(newMap, "click", () => {
+    // Hide UI panels when clicking on the map (if no marker is selected)
+    window.kakao.maps.event.addListener(newMap, "click", (mouseEvent) => {
       if (!selectedMarker) {
         setShowButtons(false);
         setShowPanelButtons(false);
       }
+  
+      // Always handle map interaction on click
+      handleMapInteraction(mouseEvent);
     });
-
-    // Right click (or long press on mobile) to show buttons
-    if (isMobile) {
-      // Mobile touch events
-      window.kakao.maps.event.addListener(newMap, "touchstart", () => {
-        setTouchStartTime(Date.now());
-      });
-
-      window.kakao.maps.event.addListener(newMap, "touchend", (mouseEvent) => {
-        const touchDuration = Date.now() - touchStartTime;
-        if (touchDuration > 500) { // Long press
-          handleMapInteraction(mouseEvent);
-        }
-      });
-    } else {
-      // Desktop right click
-      window.kakao.maps.event.addListener(newMap, "rightclick", (mouseEvent) => {
-        handleMapInteraction(mouseEvent);
-      });
-    }
   };
-
+  
   const handleMapInteraction = (mouseEvent) => {
     const position = mouseEvent.latLng;
+  
+    // 🔥 Move marker to clicked position
+    if (markerRef.current) {
+      markerRef.current.setPosition(position);
+    }
+  
     setCurrentPosition(position);
-    setShowButtons(true);
     setSelectedMarker(position);
+    setShowButtons(true);
     getAddress(position);
   };
+  
+  
 
   const getUserLocation = () => {
     if (!navigator.geolocation) {
