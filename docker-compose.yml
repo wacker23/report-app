@@ -2,7 +2,7 @@ version: '3'
 
 services:
   report-app:
-    image: registry.smartsignal.co.kr/report-app:latest
+    image: registry.smartsignal.co.kr/as-report-app:latest
     restart: always
     networks:
       - traefik
