@@ -30,7 +30,7 @@ const Login = () => {
     <div className="login-background">
       <div className="login-container">
         <div className="login-header">
-          <h1>STL Report Manager</h1>
+          <h1>AS 보고서 관리</h1>
           <p>Please sign in to continue</p>
         </div>
         
