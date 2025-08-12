@@ -73,15 +73,38 @@ const SearchList = () => {
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this document?")) {
       try {
+        // 첨부된 모든 사진 삭제
+        const photos = selectedDocument.photos || {};
+        const allPhotoURLs = [
+          ...(photos.fieldPhotoURLs || []),
+          ...(photos.reasonPhotoURLs || [])
+        ];
+        for (const url of allPhotoURLs) {
+          try {
+            // Firebase Storage에서 파일 경로 추출
+            // URL 예시: https://firebasestorage.googleapis.com/v0/b/your-app.appspot.com/o/fieldPhotoURLs%2Ffilename.jpg?...
+            // 경로 추출: fieldPhotoURLs/filename.jpg
+            const match = url.match(/\/o\/(.*?)\?/);
+            if (match && match[1]) {
+              const decodedPath = decodeURIComponent(match[1]);
+              const photoRef = ref(storage, decodedPath);
+              await deleteObject(photoRef);
+            }
+          } catch (err) {
+            // 개별 사진 삭제 실패는 무시
+            console.error("Error deleting attached photo:", err);
+          }
+        }
+        // 문서 삭제
         await deleteDoc(doc(db, "asAddress", selectedDocument.id));
-        alert("Document successfully deleted!");
+        alert("Document and attached photos successfully deleted!");
         setDocuments((prevDocuments) =>
           prevDocuments.filter((doc) => doc.id !== selectedDocument.id)
         );
         setSelectedDocument(null);
       } catch (error) {
         console.error("Error deleting document:", error);
-        alert("Failed to delete document.");
+        alert("Failed to delete document and attached photos.");
       }
     }
   };
@@ -455,43 +478,62 @@ const SearchList = () => {
                   />
                 )}
               </div>
-              
-              
-
-              {/* Upload Field Photos */}
+              {/* 현장 사진 업로드 및 삭제 */}
               <div>
-                <label>Upload Field Photos:</label>
+                <label>현장 사진:</label>
                 <input
                   type="file"
                   multiple
                   onChange={(e) => handleFileUpload(e, "fieldPhotoURLs")}
                   disabled={uploading}
                 />
+                {formData.photos?.fieldPhotoURLs?.length > 0 && (
+                  <div className="photo-gallery">
+                    {formData.photos.fieldPhotoURLs.map((photoURL, idx) => (
+                      <div key={idx} className="photo-item">
+                        <a href={photoURL} target="_blank" rel="noopener noreferrer">
+                          <img src={photoURL} alt={`Field Photo ${idx + 1}`} className="photo-thumbnail" />
+                        </a>
+                        <button
+                          type="button"
+                          className="delete-photo-button"
+                          onClick={() => handleDeletePhoto(photoURL, "fieldPhotoURLs")}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-
-
-              {/* Upload Field Photos */}
+              {/* 원인 사진 업로드 및 삭제 */}
               <div>
-                <label>Upload resion Photos:</label>
+                <label>원인 사진:</label>
                 <input
                   type="file"
                   multiple
                   onChange={(e) => handleFileUpload(e, "reasonPhotoURLs")}
                   disabled={uploading}
                 />
+                {formData.photos?.reasonPhotoURLs?.length > 0 && (
+                  <div className="photo-gallery">
+                    {formData.photos.reasonPhotoURLs.map((photoURL, idx) => (
+                      <div key={idx} className="photo-item">
+                        <a href={photoURL} target="_blank" rel="noopener noreferrer">
+                          <img src={photoURL} alt={`Reason Photo ${idx + 1}`} className="photo-thumbnail" />
+                        </a>
+                        <button
+                          type="button"
+                          className="delete-photo-button"
+                          onClick={() => handleDeletePhoto(photoURL, "reasonPhotoURLs")}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-
-              {/* Upload Material Photos */}
-              <div>
-                <label>Upload Material Photos:</label>
-                <input
-                  type="file"
-                  multiple
-                  onChange={(e) => handleFileUpload(e, "materialPhotoURLs")}
-                  disabled={uploading}
-                />
-              </div>
-
               <button type="button" onClick={saveEdits}>
                 Save
               </button>
