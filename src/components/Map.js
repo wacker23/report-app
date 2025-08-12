@@ -59,7 +59,7 @@ const KakaoMap = () => {
 
     const newMap = new window.kakao.maps.Map(container, options);
     setMap(newMap);
-     // 🔥 Create marker only once
+     
   if (!markerRef.current) {
     markerRef.current = new window.kakao.maps.Marker({
       position: options.center,
@@ -298,7 +298,7 @@ const KakaoMap = () => {
           className="search-input"
         />
         <button onClick={handleSearch} className="search-button">
-          Search
+          검색
         </button>
       </div>
 
@@ -329,7 +329,7 @@ const KakaoMap = () => {
 
       {/* Bottom Panel */}
       <div className={`bottom-panel ${isMobile ? "mobile-panel" : ""}`}>
-        <h3>Selected Location</h3>
+        <h3>선택된 위치</h3>
         <p>{address || "No address selected"}</p>
 
         {showPanelButtons && (
@@ -338,7 +338,7 @@ const KakaoMap = () => {
               onClick={() => navigate("/add-report", { state: { address } })}
               className="panel-button"
             >
-              Add Report
+            보고서 추가
             </button>
             <button
                 onClick={() => {
@@ -347,13 +347,13 @@ const KakaoMap = () => {
                 }}
                 className="panel-button"
                 >
-                List
+                리스트
                 </button>
             <button
               onClick={() => deleteMarker(selectedMarker)}
               className="panel-button delete-button"
             >
-              Delete
+            삭제
             </button>
           </div>
         )}

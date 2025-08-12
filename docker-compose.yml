@@ -1,11 +1,8 @@
-
 version: '3'
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 services:
   report-app:
-    image: registry.smartsignal.co.kr/report-app:latest
+    image: registry.smartsignal.co.kr/as-report-app:latest
     restart: always
     networks:
       - traefik
@@ -23,34 +20,6 @@ services:
       - "traefik.http.services.report.loadbalancer.server.port=3000"
       - "traefik.http.services.report.loadbalancer.server.scheme=http"
 
-=======
-=======
-
->>>>>>> fa648d2 (new update)
-services:
-  report-app:
-    image: registry.smartsignal.co.kr/report-app:latest
-    restart: always
-    networks:
-      - traefik
-    environment:
-      - NODE_ENV=production
-      - PORT=3000
-      - API_URI=${API_URI}
-      - KAKAO_KEY=${REACT_APP_FIREBASE_API_KEY}
-      - TZ=Asia/Seoul
-<<<<<<< HEAD
->>>>>>> d394e4d (Initial commit)
-=======
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.report.rule=Host(`report.stl1.co.kr`)"
-      - "traefik.http.routers.report.entrypoints=websecure"
-      - "traefik.http.routers.report.tls.certresolver=resolver"
-      - "traefik.http.services.report.loadbalancer.server.port=3000"
-      - "traefik.http.services.report.loadbalancer.server.scheme=http"
-
->>>>>>> fa648d2 (new update)
 networks:
   traefik:
     external: true

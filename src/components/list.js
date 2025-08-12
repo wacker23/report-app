@@ -90,7 +90,7 @@ const List = ({ address }) => {
                 <strong>의뢰업체:</strong> {selectedDocument.company}
               </p>
               <p>
-                <strong>재활용 분류:</strong> {selectedDocument.recycleCategory}
+                <strong>제품 종류:</strong> {selectedDocument.recycleCategory}
               </p>
               <p>
                 <strong>장애 내용:</strong> {selectedDocument.malfunctionDetails}
@@ -107,7 +107,7 @@ const List = ({ address }) => {
 
               {/* Buttons */}
               <button onClick={() => setIsEditing(true)}>Edit</button>
-              <button onClick={() => setSelectedDocument(null)}>Back</button>
+              <button onClick={() => setSelectedDocument(null)}>  ← Back</button>
             </div>
           ) : (
             <form>
@@ -167,7 +167,7 @@ const List = ({ address }) => {
                 />
               </div>
               <div>
-                <label>재활용 분류:</label>
+                <label>제품 종류:</label>
                 <input
                   type="text"
                   name="recycleCategory"
@@ -238,7 +238,7 @@ const List = ({ address }) => {
                 {new Date(doc.reportDate).toLocaleString()}
               </div>
               <div>
-                <strong>재활용 분류:</strong> {doc.recycleCategory}
+                <strong>제품 종류:</strong> {doc.recycleCategory}
               </div>
               <div>
                 <strong>작성자:</strong> {doc.writer}

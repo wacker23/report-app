@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { FaMicrophone, FaCamera } from "react-icons/fa";
+import { FaMicrophone } from "react-icons/fa";
 import SpeechRecognition, { useSpeechRecognition } from "react-speech-recognition";
 import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -30,7 +30,7 @@ const AddReport = () => {
   const [reasonPhotos, setReasonPhotos] = useState([]);
   const [activeListeningField, setActiveListeningField] = useState(null);
   const navigate = useNavigate();
-  const [manufacturer, setManufacturer] = useState("");
+  const [manufacturer, setManufacturer] = useState("에스티엘");
   const [customManufacturer, setCustomManufacturer] = useState("");
 
   const fileInputRef = useRef();
@@ -40,15 +40,12 @@ const AddReport = () => {
     clearTranscriptOnListen: true
   });
 
-  const [capturedPhoto, setCapturedPhoto] = useState(null);
-  const [isCameraOpen, setIsCameraOpen] = useState(false);
-
   // Handler for toggling mic for specific field
   const handleSTT = (fieldSetter, fieldName) => {
     if (activeListeningField === fieldName) {
       // If already listening to this field, stop
       SpeechRecognition.stopListening();
-      fieldSetter((prev) => prev + transcript);
+      fieldSetter(transcript); // Only set transcript, do not append
       resetTranscript();
       setActiveListeningField(null);
     } else {
@@ -56,9 +53,6 @@ const AddReport = () => {
       if (activeListeningField) {
         // Stop previous listening
         SpeechRecognition.stopListening();
-        // Update the previous field with current transcript
-        const prevFieldSetter = getFieldSetter(activeListeningField);
-        prevFieldSetter((prev) => prev + transcript);
         resetTranscript();
       }
       
@@ -77,6 +71,7 @@ const AddReport = () => {
       case "malfunctionDetails": return setMalfunctionDetails;
       case "actionDetails": return setActionDetails;
       case "malfunctionReason": return setMalfunctionReason;
+      case "writer": return setWriter;
       default: return () => {};
     }
   };
@@ -88,43 +83,6 @@ const AddReport = () => {
       fieldSetter(transcript);
     }
   }, [transcript, activeListeningField]);
-
-  // Rest of your camera functions remain the same...
-  const openCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" },
-      });
-      const videoElement = document.getElementById("cameraFeed");
-      videoElement.srcObject = stream;
-      videoElement.play();
-      setIsCameraOpen(true);
-    } catch (error) {
-      console.error("Error accessing the camera:", error);
-      alert("카메라에 접근할 수 없습니다.");
-    }
-  };
-
-  const capturePhoto = () => {
-    const videoElement = document.getElementById("cameraFeed");
-    const canvasElement = document.createElement("canvas");
-    const context = canvasElement.getContext("2d");
-    canvasElement.width = videoElement.videoWidth;
-    canvasElement.height = videoElement.videoHeight;
-    context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-    const photo = canvasElement.toDataURL("image/png");
-    setCapturedPhoto(photo);
-    const stream = videoElement.srcObject;
-    const tracks = stream.getTracks();
-    tracks.forEach((track) => track.stop());
-    setIsCameraOpen(false);
-  };
-
-  if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
-    alert("이 브라우저는 음성인식을 지원하지 않습니다.");
-  }
-
-
 
 // Function to upload files to Firebase Storage
 const uploadFiles = async (files, folder) => {
@@ -216,12 +174,22 @@ return (
     {/* Writer */}
     <div>
       <label>작성자:</label>
-      <input
-        type="text"
-        value={writer}
-        onChange={(e) => setWriter(e.target.value)}
-        placeholder="작성자 이름 입력"
-      />
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <input
+          type="text"
+          value={writer}
+          onChange={(e) => setWriter(e.target.value)}
+          placeholder="작성자 이름 입력"
+        />
+        <FaMicrophone
+          onClick={() => handleSTT(setWriter, "writer")}
+          style={{
+            marginLeft: "10px",
+            cursor: "pointer",
+            color: activeListeningField === "writer" ? "red" : "black",
+          }}
+        />
+      </div>
     </div>
 
     {/* Phone Number */}
@@ -278,13 +246,13 @@ return (
 
     {/* Recycle Category */}
     <div>
-      <label>제품 공류:</label>
+      <label>제품 종류:</label>
       <div style={{ display: "flex", alignItems: "center" }}>
         <input
           type="text"
           value={recycleCategory}
           onChange={(e) => setRecycleCategory(e.target.value)}
-          placeholder="재툼 공류를 입력하세요"
+          placeholder=" 제품 종류를 입력하세요"
         />
         <FaMicrophone
           onClick={() => handleSTT(setRecycleCategory, "recycleCategory")}
@@ -383,99 +351,35 @@ return (
     {/* Field Photos */}
     <div>
       <label>현장 사진 업로드:</label>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={(e) => setFieldPhotos(Array.from(e.target.files))}
-        />
-        <FaCamera
-          onClick={openCamera}
-          style={{
-            marginLeft: "10px",
-            cursor: "pointer",
-            fontSize: "20px",
-            color: "#333",
-          }}
-        />
-      </div>
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={(e) => setFieldPhotos(Array.from(e.target.files))}
+      />
     </div>
 
     {/* Reason Photos */}
     <div>
-      <label>이유 사진 업로드:</label>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={(e) => setReasonPhotos(Array.from(e.target.files))}
-        />
-        <FaCamera
-          onClick={openCamera}
-          style={{
-            marginLeft: "10px",
-            cursor: "pointer",
-            fontSize: "20px",
-            color: "#333",
-          }}
-        />
-      </div>
+      <label>원인 사진 업로드:</label>
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={(e) => setReasonPhotos(Array.from(e.target.files))}
+      />
     </div>
 
-    {/* Material Photos */}
+    {/* Material Photos
     <div>
       <label>원료 사진 업로드:</label>
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <input
-          type="file"
-          multiple
-          accept="image/*"
-          onChange={(e) => setMaterialPhotos(Array.from(e.target.files))}
-        />
-        <FaCamera
-          onClick={openCamera}
-          style={{
-            marginLeft: "10px",
-            cursor: "pointer",
-            fontSize: "20px",
-            color: "#333",
-          }}
-        />
-      </div>
-    </div>
-
-    {/* Camera Feed */}
-    {isCameraOpen && (
-      <div style={{ marginBottom: "20px" }}>
-        <video
-          id="cameraFeed"
-          style={{
-            width: "100%",
-            maxWidth: "300px",
-            marginTop: "10px",
-            border: "1px solid #ccc",
-            borderRadius: "6px",
-          }}
-        ></video>
-        <button type="button" onClick={capturePhoto} style={{ marginTop: "10px" }}>
-          사진 촬영
-        </button>
-      </div>
-    )}
-
-    {/* Preview of Captured Photo */}
-    {capturedPhoto && (
-      <div style={{ marginBottom: "20px" }}>
-        <h4>Captured Photo:</h4>
-        <img
-          src={capturedPhoto}
-          alt="Captured"
-          style={{ width: "100%", maxWidth: "300px", borderRadius: "6px" }}
-        />
-      </div>
-    )}
+      <input
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={(e) => setMaterialPhotos(Array.from(e.target.files))}
+      />
+    </div> */}
 
     <button type="submit">제출</button>
   </form>

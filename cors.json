@@ -1,6 +1,6 @@
 [
     {
-      "origin": ["https://report.stl1.co.kr"],
+      "origin": ["http://localhost:3000", "https://report.stl1.co.kr"],
       "method": ["GET"],
       "responseHeader": ["Content-Type"],
       "maxAgeSeconds": 3600

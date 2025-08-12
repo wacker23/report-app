@@ -151,7 +151,7 @@ const SearchList = () => {
         <select onChange={(e) => setFilterField(e.target.value)}>
           <option value="address">주소</option>
           <option value="reportDate">작성일</option>
-          <option value="recycleCategory">재활용 분류</option>
+          <option value="recycleCategory">제품 종류</option>
         </select>
       </div>
 
@@ -182,7 +182,7 @@ const SearchList = () => {
                 <strong>의뢰업체:</strong> {selectedDocument.company}
               </p>
               <p>
-                <strong>재활용 분류:</strong> {selectedDocument.recycleCategory}
+                <strong>제품 종류:</strong> {selectedDocument.recycleCategory}
               </p>
               
               <p>
@@ -200,7 +200,7 @@ const SearchList = () => {
               
 
               {/* Field Photos */}
-              <h4>현장 Photos</h4>
+              <h4>현장 사진: </h4>
               {selectedDocument.photos?.fieldPhotoURLs?.length > 0 ? (
                 <div className="photo-gallery">
                   {selectedDocument.photos.fieldPhotoURLs.map((photoURL, index) => (
@@ -232,7 +232,7 @@ const SearchList = () => {
               )}
 
 
-            <h4>이유 Photos</h4>
+            <h4>원인 사진: </h4>
               {selectedDocument.photos?.reasonPhotoURLs?.length > 0 ? (
                 <div className="photo-gallery">
                   {selectedDocument.photos.reasonPhotoURLs.map((photoURL, index) => (
@@ -265,47 +265,71 @@ const SearchList = () => {
 
 
 
-              {/* Material Photos */}
-              <h4>원료 Photos</h4>
-              {selectedDocument.photos?.materialPhotoURLs?.length > 0 ? (
-                <div className="photo-gallery">
-                  {selectedDocument.photos.materialPhotoURLs.map((photoURL, index) => (
-                    <div key={index} className="photo-item">
-                      <a
-                        href={photoURL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img
-                          src={photoURL}
-                          alt={`Material Photo ${index + 1}`}
-                          className="photo-thumbnail"
-                        />
-                      </a>
-                      {isEditing && (
-                        <button
-                          onClick={() => handleDeletePhoto(photoURL, "materialPhotoURLs")}
-                          className="delete-photo-button"
-                        >
-                          Delete
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p>No Material Photos</p>
-              )}
+            
 
               {/* Buttons */}
-              <button onClick={() => setIsEditing(true)}>Edit</button>
-              <button onClick={handleDelete} style={{ backgroundColor: "red", color: "white" }}>
-                Delete
-              </button>
-              <button onClick={() => downloadReportAsPdf(selectedDocument)}>
-                Download as PDF
-              </button>
-              <button onClick={() => setSelectedDocument(null)}>Back</button>
+              <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
+                <button
+                  onClick={() => setIsEditing(true)}
+                  style={{
+                    backgroundColor: "#1976d2",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "8px 16px",
+                    fontWeight: "bold",
+                    boxShadow: "0 2px 6px rgba(25, 118, 210, 0.15)",
+                    cursor: "pointer"
+                  }}
+                >
+                  ✏️ Edit
+                </button>
+                <button
+                  onClick={handleDelete}
+                  style={{
+                    backgroundColor: "#d32f2f",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "8px 16px",
+                    fontWeight: "bold",
+                    boxShadow: "0 2px 6px rgba(211, 47, 47, 0.15)",
+                    cursor: "pointer"
+                  }}
+                >
+                  🗑️ Delete
+                </button>
+                <button
+                  onClick={() => downloadReportAsPdf(selectedDocument)}
+                  style={{
+                    backgroundColor: "#388e3c",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "8px 16px",
+                    fontWeight: "bold",
+                    boxShadow: "0 2px 6px rgba(56, 142, 60, 0.15)",
+                    cursor: "pointer"
+                  }}
+                >
+                  ⬇️ Download as PDF
+                </button>
+                <button
+                  onClick={() => setSelectedDocument(null)}
+                  style={{
+                    backgroundColor: "#757575",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "8px 16px",
+                    fontWeight: "bold",
+                    boxShadow: "0 2px 6px rgba(117, 117, 117, 0.15)",
+                    cursor: "pointer"
+                  }}
+                >
+                  ← Back
+                </button>
+              </div>
             </div>
           ) : (
             <form>
@@ -376,7 +400,7 @@ const SearchList = () => {
                 />
               </div>
               <div>
-                <label>재활용 분류:</label>
+                <label>제품 종류:</label>
                 <input
                   type="text"
                   name="recycleCategory"
@@ -493,7 +517,7 @@ const SearchList = () => {
                 {new Date(doc.reportDate).toLocaleString()}
               </div>
               <div>
-                <strong>재활용 분류:</strong> {doc.recycleCategory}
+                <strong>제품 종류:</strong> {doc.recycleCategory}
               </div>
               <div>
                 <strong>작성자:</strong> {doc.writer}
